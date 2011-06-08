@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Welcome to Flickr Photo Sync</string>
+    <string name="app_name">FlickrPhotoSync</string>
+    <string name="loadUserButtonText">Go</string>
+</resources>
