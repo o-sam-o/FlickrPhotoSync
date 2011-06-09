@@ -19,7 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 public class FlickrPhotoSync extends Activity {
-    /** Called when the activity is first created. */
+	public static final String LOG_TAG = "fps";
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +29,14 @@ public class FlickrPhotoSync extends Activity {
     
     public void loadPhotoSets(View view){
     	String imageUrl = ((EditText)findViewById(R.id.flickrUsername)).getText().toString();
-    	Log.d("fps", "Downloading image: " + imageUrl);
+    	Log.d(LOG_TAG, "Downloading image: " + imageUrl);
     	
     	Bitmap image = null;
     	try {
     		image = downloadImage(imageUrl);
     	} catch (Exception e){
 			//TODO add better error handling
-    		Log.e("fps", "failed to download image: " + imageUrl, e);
+    		Log.e(LOG_TAG, "failed to download image: " + imageUrl, e);
     		
         	AlertDialog dialog  = new AlertDialog.Builder(this).create();
         	dialog.setMessage("Error downloading image: " + e.getMessage());
@@ -60,19 +61,24 @@ public class FlickrPhotoSync extends Activity {
 	}
 	
 	private void addImageToLibrary(Bitmap sourceBitmap){
-		ContentValues values = new ContentValues(3);
+		ContentValues values = new ContentValues(6);
 		values.put(Media.DISPLAY_NAME, "road_trip_1");
+		values.put(Media.TITLE, "Road Trip Title");
 		values.put(Media.DESCRIPTION, "Day 1, trip to Los Angeles");
 		values.put(Media.MIME_TYPE, "image/jpeg");
+		String albumName = "testAlbum";
+		values.put(Media.BUCKET_ID, albumName.hashCode());
+		values.put(Media.BUCKET_DISPLAY_NAME, albumName);
 
 		Uri uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
 		try {
+			//TODO find a way to do this that isnt lossy
 		    OutputStream outStream = getContentResolver().openOutputStream(uri);
 		    sourceBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
 		    outStream.close();
 		} catch (Exception e) {
 			//TODO add better error handling
-		    Log.e("fps", "exception while writing image", e);
+		    Log.e(LOG_TAG, "exception while writing image", e);
 		}
 	}
 
