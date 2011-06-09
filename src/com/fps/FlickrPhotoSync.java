@@ -1,5 +1,6 @@
 package com.fps;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 
 public class FlickrPhotoSync extends Activity {
 	public static final String LOG_TAG = "fps";
+	public static final String FPS_PHOTO_DIR = "fps";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,16 +64,21 @@ public class FlickrPhotoSync extends Activity {
 	}
 	
 	private void addImageToLibrary(Bitmap sourceBitmap){
-		ContentValues values = new ContentValues(6);
-		values.put(Media.DISPLAY_NAME, "road_trip_1");
+		String imageName = "road_trip_1";
+		
+		File file = new File(getSaveDir(), imageName + ".jpg");
+		
+		ContentValues values = new ContentValues(7);
+		values.put(Media.DISPLAY_NAME, imageName);
 		values.put(Media.TITLE, "Road Trip Title");
 		values.put(Media.DESCRIPTION, "Day 1, trip to Los Angeles");
 		values.put(Media.MIME_TYPE, "image/jpeg");
-		String albumName = "testAlbum";
-		values.put(Media.BUCKET_ID, albumName.hashCode());
-		values.put(Media.BUCKET_DISPLAY_NAME, albumName);
+		values.put(Media.BUCKET_ID, Environment.getExternalStorageDirectory().hashCode());
+		values.put(Media.BUCKET_DISPLAY_NAME, FPS_PHOTO_DIR);
+		values.put("_data", file.getAbsolutePath());
 
 		Uri uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
+		
 		try {
 			//TODO find a way to do this that isnt lossy
 		    OutputStream outStream = getContentResolver().openOutputStream(uri);
@@ -80,6 +88,18 @@ public class FlickrPhotoSync extends Activity {
 			//TODO add better error handling
 		    Log.e(LOG_TAG, "exception while writing image", e);
 		}
+	}
+
+	private File getSaveDir() {
+		File saveDir = new File(Environment.getExternalStorageDirectory(),
+				FPS_PHOTO_DIR);
+		Log.d(LOG_TAG, "saveDir: " + saveDir);
+
+		if (!saveDir.isDirectory() && !saveDir.mkdirs()) {
+			saveDir = null;
+			throw new IllegalStateException("couldn't mkdirs ");
+		}
+		return saveDir;
 	}
 
 }
