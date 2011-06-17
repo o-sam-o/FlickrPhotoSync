@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.fps.flickr.FlickrUser;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class FlickrPhotoSync extends Activity {
 	public static final String LOG_TAG = "fps";
@@ -31,7 +34,22 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void loadPhotoSets(View view){
-    	String imageUrl = ((EditText)findViewById(R.id.flickrUsername)).getText().toString();
+    	try{
+    		FlickrUser flickrUser = FlickrUser.findByUsername(getUsername());
+    		Log.i(LOG_TAG, flickrUser.getId());
+    		((TextView)findViewById(R.id.flickrId)).setText(flickrUser.getId());
+    	}catch(Exception e){
+    		Log.e(LOG_TAG, "failed to get user " + getUsername(), e);
+    	}
+    }
+    
+    private String getUsername(){
+    	return ((EditText)findViewById(R.id.flickrUsername)).getText().toString();
+    }
+    
+    
+    public void loadImageFromUrl(View view){
+    	String imageUrl = getUsername();
     	Log.d(LOG_TAG, "Downloading image: " + imageUrl);
     	
     	Bitmap image = null;

@@ -16,6 +16,8 @@
     <Button android:text="@string/loadUserButtonText" android:layout_width="wrap_content" android:id="@+id/loadUser" android:layout_height="wrap_content" android:onClick="loadPhotoSets"></Button>
 </LinearLayout>
 
+<TextView android:id="@+id/flickrId" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
+
  <ImageView android:id="@+id/img" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:layout_gravity="center" />
 
