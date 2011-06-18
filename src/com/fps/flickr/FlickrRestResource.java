@@ -17,6 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.fps.FlickrPhotoSync;
+
 import android.util.Log;
 
 public abstract class FlickrRestResource {
@@ -29,13 +31,15 @@ public abstract class FlickrRestResource {
 	protected static JSONObject getFlickrResource(String method, Map<String, String> params) throws FlickrException {
 		try {
 			HttpGet request = new HttpGet();
-			request.setURI(new URI(addParamsToUrl(method, params)));
+			String requestUrl = addParamsToUrl(method, params); 
+			Log.d(FlickrPhotoSync.LOG_TAG, requestUrl);
+			request.setURI(new URI(requestUrl));
 			
 			String response = httpResponseString(request);
 			if (response == null){
 				return null;
 			}
-			Log.i("test", response);
+			Log.d(FlickrPhotoSync.LOG_TAG, response);
 			
 			return (JSONObject) new JSONTokener(httpResponseString(request)).nextValue();
 		} catch (ClientProtocolException e) {

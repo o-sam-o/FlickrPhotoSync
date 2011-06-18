@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 
 import com.fps.flickr.FlickrUser;
+import com.fps.flickr.PhotoSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,7 +39,12 @@ public class FlickrPhotoSync extends Activity {
     	try{
     		FlickrUser flickrUser = FlickrUser.findByUsername(getUsername());
     		Log.i(LOG_TAG, flickrUser.getId());
-    		((TextView)findViewById(R.id.flickrId)).setText(flickrUser.getId());
+    		String photoSets = "";
+    		for(PhotoSet photoSet : flickrUser.getPhotoSets()){
+    			Log.i(LOG_TAG, photoSet.getTitle());
+    			photoSets = photoSets + photoSet.getTitle() + " ";
+    		}
+    		((TextView)findViewById(R.id.flickrId)).setText(flickrUser.getId() + " " + photoSets);
     	}catch(Exception e){
     		Log.e(LOG_TAG, "failed to get user " + getUsername(), e);
     	}

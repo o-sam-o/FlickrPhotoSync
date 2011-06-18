@@ -1,6 +1,7 @@
 package com.fps.flickr;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,8 +49,13 @@ public class FlickrUser extends FlickrRestResource {
 	public String getId() {
 		return id;
 	}
+	
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public List<PhotoSet> getPhotoSets() throws FlickrException {
+		return PhotoSet.findForUser(id);
 	}
 	
 }
