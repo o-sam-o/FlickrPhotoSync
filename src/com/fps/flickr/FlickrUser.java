@@ -14,6 +14,7 @@ public class FlickrUser extends FlickrRestResource {
 
 	private String username;
 	private String id;
+	private List<PhotoSet> photoSets = null;
 	
 	public static FlickrUser findByUsername(String username) throws FlickrException {
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -35,9 +36,10 @@ public class FlickrUser extends FlickrRestResource {
 		
 	}
 	
-	public FlickrUser(String username, String id){
+	public FlickrUser(String username, String id)  throws FlickrException {
 		this.username = username;
 		this.id = id;
+		this.photoSets = PhotoSet.findForUser(id);
 	}
 	
 	public String getUsername() {
@@ -54,8 +56,8 @@ public class FlickrUser extends FlickrRestResource {
 		this.id = id;
 	}
 	
-	public List<PhotoSet> getPhotoSets() throws FlickrException {
-		return PhotoSet.findForUser(id);
+	public List<PhotoSet> getPhotoSets() {
+		return photoSets;
 	}
 	
 }

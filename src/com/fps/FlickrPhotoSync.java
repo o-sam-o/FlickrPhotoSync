@@ -5,10 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
-
-import com.fps.flickr.FlickrUser;
-import com.fps.flickr.PhotoSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fps.tasks.LoadPhotoSetsTask;
+
 public class FlickrPhotoSync extends Activity {
 	public static final String LOG_TAG = "fps";
 	public static final String FPS_PHOTO_DIR = "fps";
@@ -36,24 +34,16 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void loadPhotoSets(View view){
-    	try{
-    		FlickrUser flickrUser = FlickrUser.findByUsername(getUsername());
-    		Log.i(LOG_TAG, flickrUser.getId());
-    		String photoSets = "";
-    		for(PhotoSet photoSet : flickrUser.getPhotoSets()){
-    			Log.i(LOG_TAG, photoSet.getTitle());
-    			photoSets = photoSets + photoSet.getTitle() + " ";
-    		}
-    		((TextView)findViewById(R.id.flickrId)).setText(flickrUser.getId() + " " + photoSets);
-    	}catch(Exception e){
-    		Log.e(LOG_TAG, "failed to get user " + getUsername(), e);
-    	}
+    	new LoadPhotoSetsTask(this).execute(getUsername());
     }
     
     private String getUsername(){
     	return ((EditText)findViewById(R.id.flickrUsername)).getText().toString();
     }
     
+    public TextView getMessageView(){
+    	return ((TextView)findViewById(R.id.flickrId));
+    }
     
     public void loadImageFromUrl(View view){
     	String imageUrl = getUsername();
