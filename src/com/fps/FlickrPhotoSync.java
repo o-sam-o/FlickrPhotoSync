@@ -9,6 +9,7 @@ import java.net.URL;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -21,11 +22,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fps.flickr.FlickrUser;
 import com.fps.tasks.LoadPhotoSetsTask;
 
 public class FlickrPhotoSync extends Activity {
 	public static final String LOG_TAG = "fps";
-	public static final String FPS_PHOTO_DIR = "fps";
+	public static final String FLICKR_USER_EXTRA = "FlickrUserExtra";
+	
+	private static final String FPS_PHOTO_DIR = "flickr";
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +46,14 @@ public class FlickrPhotoSync extends Activity {
     	return ((EditText)findViewById(R.id.flickrUsername)).getText().toString();
     }
     
-    public TextView getMessageView(){
-    	return ((TextView)findViewById(R.id.flickrId));
+    public void setMessage(String message){
+    	((TextView)findViewById(R.id.flickrId)).setText(message);
+    }
+    
+    public void displayUsersPhotoSets(FlickrUser flickrUser){
+    	Intent intent = new Intent(this, PhotoSetsActivity.class);
+    	intent.putExtra(FLICKR_USER_EXTRA, flickrUser);
+    	startActivityForResult(intent, 0);
     }
     
     public void loadImageFromUrl(View view){

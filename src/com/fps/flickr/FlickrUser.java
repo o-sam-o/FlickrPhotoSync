@@ -10,6 +10,7 @@ import com.fps.FlickrPhotoSync;
 
 import android.util.Log;
 
+@SuppressWarnings("serial")
 public class FlickrUser extends FlickrRestResource {
 
 	private String username;

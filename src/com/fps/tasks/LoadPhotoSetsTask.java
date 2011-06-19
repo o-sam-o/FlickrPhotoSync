@@ -7,7 +7,6 @@ import android.util.Log;
 import com.fps.FlickrPhotoSync;
 import com.fps.flickr.FlickrException;
 import com.fps.flickr.FlickrUser;
-import com.fps.flickr.PhotoSet;
 
 public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 
@@ -38,15 +37,11 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 	@Override
 	protected void onPostExecute(FlickrUser flickrUser) {
 		if(processException != null){
-			fps.getMessageView().setText("Error: " + processException.getMessage());
+			fps.setMessage("Error: " + processException.getMessage());
 		}else if(flickrUser == null){
-			fps.getMessageView().setText("Unable to find user");
+			fps.setMessage("Unable to find user");
 		}else{
-    		String photoSets = "";
-    		for(PhotoSet photoSet : flickrUser.getPhotoSets()){
-    			photoSets = photoSets + photoSet.getTitle() + " ";
-    		}
-    		fps.getMessageView().setText(flickrUser.getId() + " " + photoSets);	
+			fps.displayUsersPhotoSets(flickrUser);
 		}
 		dialog.dismiss();
 	}

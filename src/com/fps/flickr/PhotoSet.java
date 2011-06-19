@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.fps.FlickrPhotoSync;
 
+@SuppressWarnings("serial")
 public class PhotoSet extends FlickrRestResource {
 
 	private String title;
@@ -38,6 +39,7 @@ public class PhotoSet extends FlickrRestResource {
 				Log.e(FlickrPhotoSync.LOG_TAG, "Failed to photosets for user: " + userId);
 				return null;
 			}
+			
 			JSONArray jsonPhotoSets = result.getJSONObject("photosets").getJSONArray("photoset");
 			List<PhotoSet> photoSets = new ArrayList<PhotoSet>();
 			for (int i = 0; i < jsonPhotoSets.length(); i++) {

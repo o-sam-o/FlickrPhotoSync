@@ -1,6 +1,7 @@
 package com.fps.flickr;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,7 +22,8 @@ import com.fps.FlickrPhotoSync;
 
 import android.util.Log;
 
-public abstract class FlickrRestResource {
+@SuppressWarnings("serial")
+public abstract class FlickrRestResource implements Serializable {
 
 	protected static String OK_STATUS = "ok";
 	
