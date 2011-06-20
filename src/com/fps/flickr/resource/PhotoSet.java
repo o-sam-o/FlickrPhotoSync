@@ -1,4 +1,4 @@
-package com.fps.flickr;
+package com.fps.flickr.resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.fps.FlickrPhotoSync;
+import com.fps.flickr.FlickrException;
+import com.fps.flickr.FlickrRestResource;
 
 @SuppressWarnings("serial")
 public class PhotoSet extends FlickrRestResource {
@@ -18,6 +20,7 @@ public class PhotoSet extends FlickrRestResource {
 	private String title;
 	private String id;
 	private int photoCount;
+	private List<Photo> photos = null;
 	
 	public PhotoSet(){
 		
@@ -73,6 +76,36 @@ public class PhotoSet extends FlickrRestResource {
 	}
 	public void setPhotoCount(int photoCount) {
 		this.photoCount = photoCount;
+	}
+	
+	public List<Photo> getPhotos(){
+		if(photos == null){
+			loadPhotos();
+		}
+		return photos;
+	}
+	
+	public void loadPhotos(){
+		try {
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("photoset_id", id);
+			params.put("extras", "url_sq,url_m,date_taken");
+			params.put("media", "photos");
+			JSONObject jsonPhotoSet = getFlickrResource("flickr.photosets.getPhotos", params);
+			JSONArray jsonPhotos = jsonPhotoSet.getJSONObject("photoset").getJSONArray("photo");
+			photos = new ArrayList<Photo>();
+			for (int i = 0; i < jsonPhotos.length(); i++) {
+				JSONObject jsonPhoto = (JSONObject) jsonPhotos.get(i);
+				photos.add(new Photo(jsonPhoto, this));
+			}
+			Log.d(FlickrPhotoSync.LOG_TAG, "Loaded info for " + photos.size() + " photos for set " + getTitle());
+		} catch (FlickrException e) {
+			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
+			photos = null;
+		} catch (JSONException e) {
+			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
+			photos = null;
+		}
 	}
 	
 }

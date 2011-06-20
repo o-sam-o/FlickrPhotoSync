@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.fps.FlickrPhotoSync;
 import com.fps.flickr.FlickrException;
-import com.fps.flickr.FlickrUser;
+import com.fps.flickr.resource.FlickrUser;
 
 public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 

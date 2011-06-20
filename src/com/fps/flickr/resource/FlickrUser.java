@@ -1,4 +1,4 @@
-package com.fps.flickr;
+package com.fps.flickr.resource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fps.FlickrPhotoSync;
+import com.fps.flickr.FlickrException;
+import com.fps.flickr.FlickrRestResource;
 
 import android.util.Log;
 
