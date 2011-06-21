@@ -36,6 +36,12 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(PhotoSet... photosets) {
+		int totalPhotoCount = 0;
+		for(PhotoSet photoset : photosets){
+			totalPhotoCount += photoset.getPhotoCount();
+		}
+		dialog.setMax(totalPhotoCount);
+		
 		for(PhotoSet photoset : photosets){
 			//TODO add error handling
 			if(photoset.getPhotos() != null){
@@ -52,6 +58,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 					try {
 						addImageToLibrary(photo, photoUrl.getUrl());
 						photosDownloaded++;
+						dialog.setProgress(photosDownloaded);
 					} catch (Exception e) {
 						// TODO add better error handling
 						Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download picture: " + photo.getTitle() + " (" + photo.getId() + ")", e);
@@ -61,7 +68,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		}
 		return photosDownloaded;
 	}
-	
+
 	@Override
 	protected void onPostExecute(Integer result) {
 		AlertDialog alert = new AlertDialog.Builder(context).create();
@@ -75,6 +82,8 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		photosDownloaded = 0;
 		dialog = new ProgressDialog(context);
 		dialog.setMessage("Downloading photos");
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		dialog.setCancelable(false);
 		dialog.show();
 	}
 	
