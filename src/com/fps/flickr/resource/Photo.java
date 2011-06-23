@@ -88,6 +88,10 @@ public class Photo {
 		return null;
 	}
 	
+	public String getLogName() {
+		return getTitle() + " (" + getId() + ")";
+	}	
+	
 	public class PhotoUrl {
 		
 		private String url;
@@ -129,4 +133,5 @@ public class Photo {
 		
 		
 	}
+
 }
