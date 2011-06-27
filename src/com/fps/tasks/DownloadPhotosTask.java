@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -131,6 +132,8 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	@Override
 	protected void onPostExecute(Integer result) {
 		AlertDialog alert = new AlertDialog.Builder(context).create();
+		alert.setIcon(R.drawable.ic_dialog_info);
+		alert.setTitle("Download Complete");	
 		alert.setMessage(getCompletionMessage());
 		dialog.dismiss();
 		alert.show();
@@ -163,9 +166,8 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	protected void onPreExecute() {
 		photosDownloaded = 0;
 		dialog = new ProgressDialog(context);
-		dialog.setMessage("Downloading photos");
+		dialog.setTitle("Downloading photos");
 		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		dialog.setCancelable(false);
 		dialog.show();
 	}
 	

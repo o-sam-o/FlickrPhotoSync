@@ -16,8 +16,6 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 	
 	public LoadPhotoSetsTask(FlickrPhotoSync fps){
 		this.fps = fps;
-		dialog = new ProgressDialog(fps);
-		dialog.setMessage("Loading photosets");
 	}
 	
 	@Override
@@ -48,7 +46,7 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 
 	@Override
 	protected void onPreExecute() {
-		dialog.show();
+		dialog = ProgressDialog.show(fps, "Getting photo info", "please wait...");
 	}
 
 }

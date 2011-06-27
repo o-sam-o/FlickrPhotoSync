@@ -13,7 +13,6 @@ import com.fps.tasks.LoadPhotoSetsTask;
 public class FlickrPhotoSync extends Activity {
 	public static final String LOG_TAG = "fps";
 	public static final String FLICKR_USER_EXTRA = "FlickrUserExtra";
-	
 	public static final String FPS_PHOTO_DIR = "flickr";
 	
 	
