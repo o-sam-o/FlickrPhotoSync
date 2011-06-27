@@ -2,6 +2,7 @@ package com.fps.tasks;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	
 	private Activity context;
 	private ProgressDialog dialog;
-	private int photosDownloaded;
+	private int photosDownloaded = 0;
+	private int alreadyExistsCount = 0;
+	private int errorCount = 0;
 	
 	public DownloadPhotosTask(Activity context){
 		this.context = context;
@@ -46,36 +49,52 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		
 		for(PhotoSet photoset : photosets){
 			Map<String, ExistingFlickrPhotoRef> alreadyDownloaded = findFlickrImages(photoset.getTitle());
-			//TODO add error handling
-			if(photoset.getPhotos() != null){
-				for(Photo photo : photoset.getPhotos()){
-					if(isCancelled()){
-						return photosDownloaded;
-					}
-					ExistingFlickrPhotoRef existingPhoto = alreadyDownloaded.get(photo.getId());
-					//TODO add support for updating
-					if(existingPhoto != null){
-						Log.i(FlickrPhotoSync.LOG_TAG, "Skipping " + photo.getLogName() + " as already downloaded");
-						continue;
-					}
-					
-					Photo.PhotoUrl photoUrl = photo.getPhotoUrl(Photo.MEDIUM_TYPE);
-					if(photoUrl == null){
-						Log.e(FlickrPhotoSync.LOG_TAG, "Unable to find medium photo for photo " + photo.getLogName());
-						continue;
-					}
-					try {
-						addImageToLibrary(photo, photoUrl.getUrl());
-						photosDownloaded++;
-						dialog.setProgress(photosDownloaded);
-					} catch (Exception e) {
-						// TODO add better error handling
-						Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download picture: " + photo.getLogName(), e);
-					}
+			if(photoset.getPhotos() == null){
+				Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download photos info for photoset : " + photoset.getTitle());
+				errorCount += photoset.getPhotoCount();
+				updateProgressIndicator();
+				continue;
+			}
+			
+			for(Photo photo : photoset.getPhotos()){
+				if(isCancelled()){
+					return getImagesProcessed();
+				}
+				ExistingFlickrPhotoRef existingPhoto = alreadyDownloaded.get(photo.getId());
+				//TODO add support for updating
+				if(existingPhoto != null){
+					Log.i(FlickrPhotoSync.LOG_TAG, "Skipping " + photo.getLogName() + " as already downloaded");
+					alreadyExistsCount++;
+					updateProgressIndicator();
+					continue;
+				}
+				
+				Photo.PhotoUrl photoUrl = photo.getPhotoUrl(Photo.MEDIUM_TYPE);
+				if(photoUrl == null){
+					Log.e(FlickrPhotoSync.LOG_TAG, "Unable to find medium photo for photo " + photo.getLogName());
+					continue;
+				}
+				
+				try {
+					addImageToLibrary(photo, photoUrl.getUrl());
+					photosDownloaded++;
+					updateProgressIndicator();
+				} catch (Exception e) {
+					errorCount++;
+					Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download picture: " + photo.getLogName(), e);
 				}
 			}
+			
 		}
-		return photosDownloaded;
+		return getImagesProcessed();
+	}
+
+	private void updateProgressIndicator() {
+		dialog.setProgress(getImagesProcessed());
+	}
+	
+	private int getImagesProcessed(){
+		return photosDownloaded + errorCount + alreadyExistsCount;	
 	}
 
 	private Map<String, ExistingFlickrPhotoRef> findFlickrImages(String setName){
@@ -112,9 +131,32 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	@Override
 	protected void onPostExecute(Integer result) {
 		AlertDialog alert = new AlertDialog.Builder(context).create();
-		alert.setMessage("Downloaded " + result + " photos.");
+		alert.setMessage(getCompletionMessage());
 		dialog.dismiss();
 		alert.show();
+	}
+	
+	private String getCompletionMessage(){
+		StringWriter message = new StringWriter();
+		
+		message.append("Downloaded " + photosDownloaded + " " + puralize("photo", photosDownloaded));
+		if(alreadyExistsCount != 0){
+			message.append(", skipped " + alreadyExistsCount + " existing " + puralize("photo", alreadyExistsCount));
+		}
+		if(errorCount != 0){
+			message.append(", failed to download " + errorCount + " " + puralize("photo", errorCount));
+		}
+		message.append(".");
+		
+		return message.toString();
+	}
+	
+	private String puralize(String text, int count){
+		if(count == 1){
+			return text;
+		}else{
+			return text + "s";
+		}
 	}
 	
 	@Override
@@ -150,8 +192,9 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 			outStream = context.getContentResolver().openOutputStream(uri);
 			new DefaultHttpClient().execute(new HttpGet(photoUrl)).getEntity().writeTo(outStream);
 		} catch (Exception e) {
-			//TODO add better error handling
+			//FIXME do we need to delete the entry in the content resolver?
 		    Log.e(FlickrPhotoSync.LOG_TAG, "exception while writing photo " + photo.getLogName(), e);
+		    throw e;
 		}finally{
 			if(outStream != null){
 				outStream.close();
@@ -197,9 +240,11 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 			this.contentId = contentId;
 			this.filePath = filePath;
 		}
+		@SuppressWarnings("unused")
 		public String getContentId() {
 			return contentId;
 		}
+		@SuppressWarnings("unused")
 		public String getFilePath() {
 			return filePath;
 		}
