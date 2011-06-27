@@ -19,6 +19,7 @@ public final class R {
         public static final int img=0x7f050004;
         public static final int linearLayout1=0x7f050000;
         public static final int loadUser=0x7f050002;
+        public static final int photoSetLabel=0x7f050005;
     }
     public static final class layout {
         public static final int main=0x7f030000;
