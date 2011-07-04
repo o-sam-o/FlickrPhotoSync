@@ -12,7 +12,7 @@ import com.fps.flickr.resource.FlickrUser;
 import com.fps.tasks.LoadPhotoSetsTask;
 
 public class FlickrPhotoSync extends Activity {
-	private static final int DO_OAUTH_RESULT_CODE = 101;
+	private static final int DO_OAUTH_REQUEST_CODE = 101;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,14 +21,14 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void loadPhotoSets(View view){
-    	startActivityForResult(new Intent().setClass(this, PrepareRequestTokenActivity.class), DO_OAUTH_RESULT_CODE);
+    	startActivityForResult(new Intent().setClass(this, PrepareRequestTokenActivity.class), DO_OAUTH_REQUEST_CODE);
     }
     
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
-    	Log.i(FPSContants.LOG_TAG, "Handling oauth activity response");
+    	Log.d(FPSContants.LOG_TAG, "Handling oauth activity response");
 		super.onActivityResult(reqCode, resultCode, data);
-		if(resultCode == DO_OAUTH_RESULT_CODE){
+		if(reqCode == DO_OAUTH_REQUEST_CODE){
 			new LoadPhotoSetsTask(this).execute(getUsername());
 		}
     }
