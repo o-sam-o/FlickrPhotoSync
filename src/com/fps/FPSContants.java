@@ -8,6 +8,7 @@ public class FPSContants {
 	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow";
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+	public static String OAUTH_USERNAME = "FlickrOAuthUserName";
 	
 	public static final String FLICKR_REQUEST_TOKEN_URL = "http://www.flickr.com/services/oauth/request_token";
 	public static final String FLICKR_AUTHORISE_URL = "http://www.flickr.com/services/oauth/authorize";

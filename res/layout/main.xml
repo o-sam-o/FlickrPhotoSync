@@ -17,6 +17,9 @@
 </LinearLayout>
 
 <TextView android:id="@+id/flickrId" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
+<ToggleButton android:id="@+id/loginToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" 
+			  android:layout_gravity="right" android:textOff="@string/login_label" android:textOn="Login ..." android:onClick="toggleLogin">
+</ToggleButton>
 
  <ImageView android:id="@+id/img" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:layout_gravity="center" />

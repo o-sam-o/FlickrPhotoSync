@@ -47,6 +47,7 @@ public class RetrieveAccessTokenTask extends AsyncTask<Uri, Void, Void> {
 			final Editor edit = prefs.edit();
 			edit.putString(OAuth.OAUTH_TOKEN, consumer.getToken());
 			edit.putString(OAuth.OAUTH_TOKEN_SECRET, consumer.getTokenSecret());
+			edit.putString(FPSContants.OAUTH_USERNAME, getFlickrUserName());
 			edit.commit();
 
 			String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
@@ -62,4 +63,10 @@ public class RetrieveAccessTokenTask extends AsyncTask<Uri, Void, Void> {
 
 		return null;
 	}
+	
+	private String getFlickrUserName(){
+		return provider.getResponseParameters().get("username").first();
+	}
+	
+	
 }

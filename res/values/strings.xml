@@ -3,4 +3,5 @@
     <string name="welcome">Welcome to Flickr Photo Sync</string>
     <string name="app_name">FlickrPhotoSync</string>
     <string name="loadUserButtonText">Go</string>
+    <string name="login_label">Login</string>
 </resources>
