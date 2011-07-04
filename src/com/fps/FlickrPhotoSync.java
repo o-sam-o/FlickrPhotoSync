@@ -1,8 +1,10 @@
 package com.fps;
 
+import oauth.signpost.OAuth;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,7 +23,11 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void loadPhotoSets(View view){
-    	startActivityForResult(new Intent().setClass(this, PrepareRequestTokenActivity.class), DO_OAUTH_REQUEST_CODE);
+    	if (PreferenceManager.getDefaultSharedPreferences(this).getString(OAuth.OAUTH_TOKEN, "").length() == 0){
+    		startActivityForResult(new Intent().setClass(this, PrepareRequestTokenActivity.class), DO_OAUTH_REQUEST_CODE);
+    	}else{
+			new LoadPhotoSetsTask(this).execute(getUsername());
+    	}
     }
     
     @Override

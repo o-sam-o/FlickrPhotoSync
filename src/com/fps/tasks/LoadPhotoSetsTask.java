@@ -2,6 +2,7 @@ package com.fps.tasks;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fps.FPSContants;
@@ -22,7 +23,7 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 	@Override
 	protected FlickrUser doInBackground(String... usernames) {
 		try {
-			FlickrUser flickrUser = FlickrUser.findByUsername(usernames[0]);
+			FlickrUser flickrUser = FlickrUser.findByUsername(usernames[0], PreferenceManager.getDefaultSharedPreferences(fps));
 			Log.i(FPSContants.LOG_TAG, flickrUser.getId());
 			Log.i(FPSContants.LOG_TAG, "Photosets: " + flickrUser.getPhotoSets().size());
 			return flickrUser;

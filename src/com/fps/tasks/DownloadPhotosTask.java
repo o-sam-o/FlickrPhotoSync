@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.client.methods.HttpGet;
@@ -48,14 +49,15 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		
 		for(PhotoSet photoset : photosets){
 			Map<String, ExistingFlickrPhotoRef> alreadyDownloaded = findFlickrImages(photoset.getTitle());
-			if(photoset.getPhotos() == null){
+			List<Photo> photos = photoset.getPhotos(context);
+			if(photos == null){
 				Log.e(FPSContants.LOG_TAG, "Failed to download photos info for photoset : " + photoset.getTitle());
 				errorCount += photoset.getPhotoCount();
 				updateProgressIndicator();
 				continue;
 			}
 			
-			for(Photo photo : photoset.getPhotos()){
+			for(Photo photo : photos){
 				if(isCancelled()){
 					return getImagesProcessed();
 				}

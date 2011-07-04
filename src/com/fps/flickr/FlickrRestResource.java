@@ -10,6 +10,7 @@ import java.util.Map;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -23,23 +24,22 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.SharedPreferences;
-import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
 import com.fps.FPSContants;
-import com.fps.FlickrPhotoSync;
 
 @SuppressWarnings("serial")
 public abstract class FlickrRestResource implements Serializable {
 
 	protected static String OK_STATUS = "ok";
 	
-	protected static JSONObject getFlickrResource(String method, Map<String, String> params) throws FlickrException {
+	protected static JSONObject getFlickrResource(String method, Map<String, String> params, SharedPreferences prefs) throws FlickrException {
 		try {
 			HttpGet request = new HttpGet();
 			String requestUrl = addParamsToUrl(method, params); 
 			Log.d(FPSContants.LOG_TAG, requestUrl);
 			request.setURI(new URI(requestUrl));
+			getConsumer(prefs).sign(request);
 			
 			String response = httpResponseString(request);
 			if (response == null){
@@ -56,7 +56,10 @@ public abstract class FlickrRestResource implements Serializable {
 			throw new FlickrException("Failed to get flickr resource for method: " + method + " params: " + params, e);
 		} catch (JSONException e) {
 			throw new FlickrException("Failed to get flickr resource for method: " + method + " params: " + params, e);
+		} catch (OAuthException e){
+			throw new FlickrException("Failed to get flickr resource for method: " + method + " params: " + params, e);
 		}
+		 
 	}
 
 	private static String httpResponseString(HttpUriRequest request) throws ClientProtocolException, IOException {
@@ -85,7 +88,7 @@ public abstract class FlickrRestResource implements Serializable {
 		return writer.toString();
 	}
 	
-	private OAuthConsumer getConsumer(SharedPreferences prefs) {
+	private static OAuthConsumer getConsumer(SharedPreferences prefs) {
 		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
 		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(FPSContants.FLICKR_KEY, FPSContants.FLICKR_SECRET);

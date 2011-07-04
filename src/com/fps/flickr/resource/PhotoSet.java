@@ -8,6 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fps.FPSContants;
@@ -26,17 +29,17 @@ public class PhotoSet extends FlickrRestResource {
 		
 	}
 	
-	public PhotoSet(String title, String id, int photoCount) {
+	public PhotoSet(String title, String id, int photoCount, SharedPreferences prefs) {
 		super();
 		this.title = title;
 		this.id = id;
 		this.photoCount = photoCount;
 	}
 
-	public static List<PhotoSet> findForUser(String userId) throws FlickrException {
+	public static List<PhotoSet> findForUser(String userId, SharedPreferences prefs) throws FlickrException {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("user_id", userId);
-		JSONObject result = getFlickrResource("flickr.photosets.getList", params);
+		JSONObject result = getFlickrResource("flickr.photosets.getList", params, prefs);
 		try {
 			if(result == null || !result.getString("stat").equals(OK_STATUS)){
 				Log.e(FPSContants.LOG_TAG, "Failed to photosets for user: " + userId);
@@ -49,7 +52,8 @@ public class PhotoSet extends FlickrRestResource {
 				JSONObject jsonPhotoSet = (JSONObject) jsonPhotoSets.get(i);
 				photoSets.add(new PhotoSet(jsonPhotoSet.getJSONObject("title").getString("_content"), 
 										   jsonPhotoSet.getString("id"), 
-										   jsonPhotoSet.getInt("photos")));
+										   jsonPhotoSet.getInt("photos"),
+										   prefs));
 			}
 			
 			return photoSets;
@@ -78,20 +82,20 @@ public class PhotoSet extends FlickrRestResource {
 		this.photoCount = photoCount;
 	}
 	
-	public List<Photo> getPhotos(){
+	public List<Photo> getPhotos(Context context){
 		if(photos == null){
-			loadPhotos();
+			loadPhotos(PreferenceManager.getDefaultSharedPreferences(context));
 		}
 		return photos;
 	}
 	
-	public void loadPhotos(){
+	public void loadPhotos(SharedPreferences prefs){
 		try {
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("photoset_id", id);
 			params.put("extras", "url_sq,url_m,date_taken");
 			params.put("media", "photos");
-			JSONObject jsonPhotoSet = getFlickrResource("flickr.photosets.getPhotos", params);
+			JSONObject jsonPhotoSet = getFlickrResource("flickr.photosets.getPhotos", params, prefs);
 			JSONArray jsonPhotos = jsonPhotoSet.getJSONObject("photoset").getJSONArray("photo");
 			photos = new ArrayList<Photo>();
 			for (int i = 0; i < jsonPhotos.length(); i++) {
