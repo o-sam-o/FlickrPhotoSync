@@ -6,7 +6,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fps.FlickrPhotoSync;
+import com.fps.FPSContants;
 import com.fps.flickr.FlickrException;
 import com.fps.flickr.FlickrRestResource;
 
@@ -25,12 +25,12 @@ public class FlickrUser extends FlickrRestResource {
 		JSONObject result = getFlickrResource("flickr.people.findByUsername", params);
 		try {
 			if(result == null || !result.getString("stat").equals(OK_STATUS)){
-				Log.e(FlickrPhotoSync.LOG_TAG, "Failed to get flickr user: " + username);
+				Log.e(FPSContants.LOG_TAG, "Failed to get flickr user: " + username);
 				return null;
 			}
 			return new FlickrUser(username, result.getJSONObject("user").getString("id"));
 		} catch (JSONException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Error parsing find user json: " + result.toString());
+			Log.e(FPSContants.LOG_TAG, "Error parsing find user json: " + result.toString());
 			throw new FlickrException("Error parsing result", e);
 		}
 	}

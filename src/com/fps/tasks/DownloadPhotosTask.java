@@ -22,14 +22,12 @@ import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
-import com.fps.FlickrPhotoSync;
+import com.fps.FPSContants;
 import com.fps.flickr.resource.Photo;
 import com.fps.flickr.resource.PhotoSet;
 
 public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 
-	private static final int MAX_FILENAME_LENGTH = 50;
-	
 	private Activity context;
 	private ProgressDialog dialog;
 	private int photosDownloaded = 0;
@@ -51,7 +49,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		for(PhotoSet photoset : photosets){
 			Map<String, ExistingFlickrPhotoRef> alreadyDownloaded = findFlickrImages(photoset.getTitle());
 			if(photoset.getPhotos() == null){
-				Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download photos info for photoset : " + photoset.getTitle());
+				Log.e(FPSContants.LOG_TAG, "Failed to download photos info for photoset : " + photoset.getTitle());
 				errorCount += photoset.getPhotoCount();
 				updateProgressIndicator();
 				continue;
@@ -64,7 +62,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 				ExistingFlickrPhotoRef existingPhoto = alreadyDownloaded.get(photo.getId());
 				//TODO add support for updating
 				if(existingPhoto != null){
-					Log.i(FlickrPhotoSync.LOG_TAG, "Skipping " + photo.getLogName() + " as already downloaded");
+					Log.i(FPSContants.LOG_TAG, "Skipping " + photo.getLogName() + " as already downloaded");
 					alreadyExistsCount++;
 					updateProgressIndicator();
 					continue;
@@ -72,7 +70,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 				
 				Photo.PhotoUrl photoUrl = photo.getPhotoUrl(Photo.MEDIUM_TYPE);
 				if(photoUrl == null){
-					Log.e(FlickrPhotoSync.LOG_TAG, "Unable to find medium photo for photo " + photo.getLogName());
+					Log.e(FPSContants.LOG_TAG, "Unable to find medium photo for photo " + photo.getLogName());
 					continue;
 				}
 				
@@ -82,7 +80,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 					updateProgressIndicator();
 				} catch (Exception e) {
 					errorCount++;
-					Log.e(FlickrPhotoSync.LOG_TAG, "Failed to download picture: " + photo.getLogName(), e);
+					Log.e(FPSContants.LOG_TAG, "Failed to download picture: " + photo.getLogName(), e);
 				}
 			}
 			
@@ -99,7 +97,7 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	}
 
 	private Map<String, ExistingFlickrPhotoRef> findFlickrImages(String setName){
-		Log.d(FlickrPhotoSync.LOG_TAG, "Finding existing flickr photos for set: "+ setName);
+		Log.d(FPSContants.LOG_TAG, "Finding existing flickr photos for set: "+ setName);
 		Cursor cur = context.managedQuery(Images.Media.EXTERNAL_CONTENT_URI, null, Media.BUCKET_DISPLAY_NAME + " = '" + setName + "'", null, null);
 		Map<String, ExistingFlickrPhotoRef>  result = new HashMap<String, ExistingFlickrPhotoRef>();
 	    if (cur.moveToFirst()) {
@@ -114,9 +112,9 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	            String flickrId = getFlickrIdFromFilePath(dataPath);
 	            String contentId = cur.getString(idColumn);
 	            
-	            Log.d(FlickrPhotoSync.LOG_TAG, "Existing Photo: " + name);
-	            Log.d(FlickrPhotoSync.LOG_TAG, "Content Id: " + contentId);
-	            Log.d(FlickrPhotoSync.LOG_TAG, "Flickr Id: " + flickrId);
+	            Log.d(FPSContants.LOG_TAG, "Existing Photo: " + name);
+	            Log.d(FPSContants.LOG_TAG, "Content Id: " + contentId);
+	            Log.d(FPSContants.LOG_TAG, "Flickr Id: " + flickrId);
 	            
 	            result.put(flickrId, new ExistingFlickrPhotoRef(contentId, dataPath));
 	        } while (cur.moveToNext());
@@ -188,14 +186,14 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 		
 		OutputStream outStream = null;
 		Uri uri = context.getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
-		Log.d(FlickrPhotoSync.LOG_TAG, "Uri: " + uri.toString());
+		Log.d(FPSContants.LOG_TAG, "Uri: " + uri.toString());
 		try {
-			Log.d(FlickrPhotoSync.LOG_TAG, "Downloading image: " + photo.getLogName());
+			Log.d(FPSContants.LOG_TAG, "Downloading image: " + photo.getLogName());
 			outStream = context.getContentResolver().openOutputStream(uri);
 			new DefaultHttpClient().execute(new HttpGet(photoUrl)).getEntity().writeTo(outStream);
 		} catch (Exception e) {
 			//FIXME do we need to delete the entry in the content resolver?
-		    Log.e(FlickrPhotoSync.LOG_TAG, "exception while writing photo " + photo.getLogName(), e);
+		    Log.e(FPSContants.LOG_TAG, "exception while writing photo " + photo.getLogName(), e);
 		    throw e;
 		}finally{
 			if(outStream != null){
@@ -215,13 +213,13 @@ public class DownloadPhotosTask extends AsyncTask<PhotoSet, Integer, Integer> {
 	}
 
 	private File getStorageFolder(){
-		return new File(Environment.getExternalStorageDirectory(), FlickrPhotoSync.FPS_PHOTO_DIR);
+		return new File(Environment.getExternalStorageDirectory(), FPSContants.FPS_PHOTO_DIR);
 	}
 	
 	private String generateFileName(Photo photo){
 		String photoName = (photo.getTitle() + '_' + photo.getId()).replaceAll("[^a-zA-Z0-9_]", "");
-		if(photoName.length() > MAX_FILENAME_LENGTH){
-			photoName = photoName.substring(0, MAX_FILENAME_LENGTH);
+		if(photoName.length() > FPSContants.MAX_FILENAME_LENGTH){
+			photoName = photoName.substring(0, FPSContants.MAX_FILENAME_LENGTH);
 		}
 		return photoName;
 	}

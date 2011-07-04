@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fps.FPSContants;
 import com.fps.FlickrPhotoSync;
 import com.fps.flickr.FlickrException;
 import com.fps.flickr.resource.FlickrUser;
@@ -22,11 +23,11 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 	protected FlickrUser doInBackground(String... usernames) {
 		try {
 			FlickrUser flickrUser = FlickrUser.findByUsername(usernames[0]);
-			Log.i(FlickrPhotoSync.LOG_TAG, flickrUser.getId());
-			Log.i(FlickrPhotoSync.LOG_TAG, "Photosets: " + flickrUser.getPhotoSets().size());
+			Log.i(FPSContants.LOG_TAG, flickrUser.getId());
+			Log.i(FPSContants.LOG_TAG, "Photosets: " + flickrUser.getPhotoSets().size());
 			return flickrUser;
 		} catch (FlickrException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to load flickr user: " + usernames[0], e);
+			Log.e(FPSContants.LOG_TAG, "Failed to load flickr user: " + usernames[0], e);
 			processException = e;
 			return null;
 		}

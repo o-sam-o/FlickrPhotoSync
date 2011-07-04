@@ -30,7 +30,7 @@ public class PhotoSetsActivity extends ListActivity {
 	}
 
     private FlickrUser getFlickrUser(){
-    	return (FlickrUser) getIntent().getExtras().get(FlickrPhotoSync.FLICKR_USER_EXTRA);
+    	return (FlickrUser) getIntent().getExtras().get(FPSContants.FLICKR_USER_EXTRA);
     }
 
 }

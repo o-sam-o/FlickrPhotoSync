@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.fps.FlickrPhotoSync;
+import com.fps.FPSContants;
 import com.fps.flickr.FlickrException;
 import com.fps.flickr.FlickrRestResource;
 
@@ -39,7 +39,7 @@ public class PhotoSet extends FlickrRestResource {
 		JSONObject result = getFlickrResource("flickr.photosets.getList", params);
 		try {
 			if(result == null || !result.getString("stat").equals(OK_STATUS)){
-				Log.e(FlickrPhotoSync.LOG_TAG, "Failed to photosets for user: " + userId);
+				Log.e(FPSContants.LOG_TAG, "Failed to photosets for user: " + userId);
 				return null;
 			}
 			
@@ -54,7 +54,7 @@ public class PhotoSet extends FlickrRestResource {
 			
 			return photoSets;
 		} catch (JSONException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Error parsing photoset json: " + result.toString());
+			Log.e(FPSContants.LOG_TAG, "Error parsing photoset json: " + result.toString());
 			throw new FlickrException("Error parsing result", e);
 		}
 	}
@@ -98,12 +98,12 @@ public class PhotoSet extends FlickrRestResource {
 				JSONObject jsonPhoto = (JSONObject) jsonPhotos.get(i);
 				photos.add(new Photo(jsonPhoto, this));
 			}
-			Log.d(FlickrPhotoSync.LOG_TAG, "Loaded info for " + photos.size() + " photos for set " + getTitle());
+			Log.d(FPSContants.LOG_TAG, "Loaded info for " + photos.size() + " photos for set " + getTitle());
 		} catch (FlickrException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
+			Log.e(FPSContants.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
 			photos = null;
 		} catch (JSONException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
+			Log.e(FPSContants.LOG_TAG, "Failed to load photos for photoset: " + getTitle(), e);
 			photos = null;
 		}
 	}

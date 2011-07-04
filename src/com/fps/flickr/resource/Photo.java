@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.fps.FlickrPhotoSync;
+import com.fps.FPSContants;
 
 public class Photo {
 	
@@ -31,7 +31,7 @@ public class Photo {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			this.dateTaken = formatter.parse(json.getString("datetaken"));
 		} catch (ParseException e) {
-			Log.e(FlickrPhotoSync.LOG_TAG, "Failed to parse datetaken: " + json.getString("datetaken"), e);
+			Log.e(FPSContants.LOG_TAG, "Failed to parse datetaken: " + json.getString("datetaken"), e);
 		}
 		this.photoUrls = new ArrayList<PhotoUrl>();
 		this.photoUrls.add(new PhotoUrl(SQUARE_TYPE, json));
