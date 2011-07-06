@@ -4,24 +4,22 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/welcome"
-    />
-<LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content">
-    <EditText android:id="@+id/flickrUsername" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content">
-        <requestFocus></requestFocus>
-    </EditText>
-    <Button android:text="@string/loadUserButtonText" android:layout_width="wrap_content" android:id="@+id/loadUser" android:layout_height="wrap_content" android:onClick="loadPhotoSets"></Button>
-</LinearLayout>
-
-<TextView android:id="@+id/flickrId" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
-<ToggleButton android:id="@+id/loginToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" 
-			  android:layout_gravity="right" android:textOff="@string/login_label" android:textOn="Login ..." android:onClick="toggleLogin">
-</ToggleButton>
-
- <ImageView android:id="@+id/img" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_gravity="center" />
+    
+	<LinearLayout android:id="@+id/usernameLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="5px">
+	    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/flickr" android:id="@+id/imageFlickrIcon"></ImageView>
+	    <EditText android:id="@+id/flickrUsername" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content">
+	        <requestFocus></requestFocus>
+	    </EditText>
+	    <Button android:text="@string/loadUserButtonText" android:layout_width="wrap_content" android:id="@+id/loadUser" android:layout_height="wrap_content" android:onClick="loadPhotoSets"></Button>
+	</LinearLayout>
+	
+	<LinearLayout android:id="@+id/textLayout" android:padding="5px" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"  android:layout_gravity="center">
+		<TextView android:text="@string/welcome" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center"></TextView>
+	</LinearLayout>
+	
+	<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/loginLayout" android:orientation="vertical" android:padding="5px">
+		<ToggleButton android:onClick="toggleLogin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textOff="@string/login_label" android:id="@+id/loginToggleButton" android:textOn="Login ..." android:layout_gravity="left"></ToggleButton>
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/instructions" android:layout_gravity="left" android:textStyle="italic"></TextView>
+	</LinearLayout>
 
 </LinearLayout>

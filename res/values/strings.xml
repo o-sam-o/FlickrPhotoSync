@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="welcome">Welcome to Flickr Photo Sync</string>
+    <string name="welcome">Flickr Photo Sync is a simple app, that downloads Flickr photosets and adds then to your phone\'s gallery.</string>
+    <string name="instructions">Login to if you would like to download private photos.</string>
     <string name="app_name">FlickrPhotoSync</string>
     <string name="loadUserButtonText">Go</string>
     <string name="login_label">Login</string>

@@ -2,6 +2,7 @@ package com.fps;
 
 import oauth.signpost.OAuth;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -10,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.fps.flickr.resource.FlickrUser;
@@ -73,7 +73,10 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void setMessage(String message){
-    	((TextView)findViewById(R.id.flickrId)).setText(message);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle("Connection Error");
+    	builder.setMessage(message);
+    	builder.show();
     }
     
     private ToggleButton getLoginToggleButton(){
