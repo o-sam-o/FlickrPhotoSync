@@ -29,7 +29,11 @@ public class FlickrPhotoSync extends Activity {
     }
     
     public void loadPhotoSets(View view){
-    	new LoadPhotoSetsTask(this).execute(getUsername());
+    	if(getUsername().trim().length() == 0){
+    		setMessage("Please provide a Flickr username");
+    	}else{
+    		new LoadPhotoSetsTask(this).execute(getUsername());
+    	}
     }
     
     public void toggleLogin(View view){
@@ -74,7 +78,8 @@ public class FlickrPhotoSync extends Activity {
     
     public void setMessage(String message){
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setTitle("Connection Error");
+    	builder.setTitle("Fail");
+    	builder.setIcon(android.R.drawable.ic_dialog_alert);
     	builder.setMessage(message);
     	builder.show();
     }

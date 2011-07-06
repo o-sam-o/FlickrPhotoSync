@@ -36,6 +36,7 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 
 	@Override
 	protected void onPostExecute(FlickrUser flickrUser) {
+		dialog.dismiss();
 		if(processException != null){
 			fps.setMessage("Error: " + processException.getMessage());
 		}else if(flickrUser == null){
@@ -43,7 +44,6 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 		}else{
 			fps.displayUsersPhotoSets(flickrUser);
 		}
-		dialog.dismiss();
 	}
 
 	@Override
