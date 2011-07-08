@@ -37,6 +37,7 @@ public class LoadPhotoSetsTask extends AsyncTask<String, Integer, FlickrUser> {
 	@Override
 	protected void onPostExecute(FlickrUser flickrUser) {
 		dialog.dismiss();
+		//FIXME displaying dialog from here doesnt seem to work
 		if(processException != null){
 			fps.setMessage("Error: " + processException.getMessage());
 		}else if(flickrUser == null){
